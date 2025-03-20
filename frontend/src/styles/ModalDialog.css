@@ -1,0 +1,12 @@
+.MuiDialog {
+    background-color: transparent;
+}
+
+.MuiDialog-paper {
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    max-height: 95vh;
+    margin: auto;
+    background-color: aquamarine;
+    padding-top: 10px;
+}

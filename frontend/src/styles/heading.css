@@ -1,0 +1,20 @@
+.heading-box {
+    background-color: #03045e;
+    color: #caf0f8;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: fit-content;
+    justify-content: space-between;
+}
+
+.heading-label {
+    font-weight: bold;
+    font-size: 30px;
+    padding-left: 10px;
+}
+.theme-switch {
+    align-self: center;
+    padding-right: 5px;
+}
