@@ -1,0 +1,29 @@
+.lead-list-container {
+    background-color: #90e0ef;
+    display: flex;
+    flex-direction: column;
+}
+
+.lead-item {
+    color: black;
+    max-height: fit-content;
+    background-color: #caf0f8;
+    margin: 5px 15px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lead-name {
+    font-weight: bold;
+    padding-left: 10px;
+}
+
+.lead-company {
+    text-transform:capitalize;
+    padding: 5px;
+    font-weight: bold;
+    color: dimgrey;
+}

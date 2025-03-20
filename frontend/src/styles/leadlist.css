@@ -1,23 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
+
 .lead-label-box {
     background-color: #0077b6;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .lead-label-container {
-    padding: 10px;
+    padding-left: 20px;
 }
+
 .create-lead-container {
-    padding: 10px;
+    padding-right: 20px;
 }
 
 .MuiButton-root.create-lead-btn {
     font-weight: bold;
+    border-radius: 15px;
+    background-color: whitesmoke;
+    color: black;
 }
 
-.MuiTypography-root.lead-label{
+.MuiTypography-root.lead-label {
     font-weight: bolder;
-    font-size: x-large;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: whitesmoke;
+    font-size: 30px;
+    font-family: 'Alata', sans-serif;
+}
+
+.main-container {
+    margin: 10px;
 }
