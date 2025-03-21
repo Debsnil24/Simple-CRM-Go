@@ -3,8 +3,8 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import "../styles/leadlist.css";
 import ModalDialog from "./ModalDialog";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getAll } from "../routes";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createLead, deleteLead, getAll } from "../routes";
 import LeadListItem from "./LeadListItem";
 
 interface Lead {
@@ -16,8 +16,9 @@ interface Lead {
 }
 
 const LeadList = () => {
-    const [openDialog, setOpenDialog] = useState(false);
-    const [leadList, setleadList] = useState<Lead[]>([]);
+  const queryClient = useQueryClient();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [leadList, setleadList] = useState<Lead[]>([]);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["leads"],
     queryFn: getAll,
@@ -25,23 +26,64 @@ const LeadList = () => {
     refetchOnWindowFocus: false,
   });
 
-  
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await deleteLead(id);
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+    },
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (newLead: {
+      name: string;
+      company: string;
+      number: string;
+      email: string;
+    }) => {
+      await createLead(
+        newLead.name,
+        newLead.company,
+        newLead.number,
+        newLead.email
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+    },
+    onError: (error) => {
+      console.log("Failed", error);
+      alert("Failed to Create Lead");
+    },
+  });
+
   useEffect(() => {
     if (Array.isArray(data)) {
       setleadList(data);
     }
   }, [data]);
-    
+
   if (isLoading) return <div className="loading">Loading...</div>;
   if (isError) return <div className="error">Error fetching data!</div>;
 
-  
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
+  const handleCreateLead = (newLead: {
+    name: string;
+    company: string;
+    number: string;
+    email: string;
+  }) => {
+    createMutation.mutate(newLead);
   };
   return (
     <div className="main-container">
@@ -61,13 +103,23 @@ const LeadList = () => {
             Create
           </Button>
         </div>
-        <ModalDialog open={openDialog} onClose={handleCloseDialog} />
+        <ModalDialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          onSubmit={handleCreateLead}
+        />
       </Box>
       <div className="lead-list">
         {leadList.length === 0 ? (
           <p className="no-lead">No Leads available</p>
         ) : (
-          leadList.map((lead) => <LeadListItem key={lead.id} leaditem={lead} />)
+          leadList.map((lead) => (
+            <LeadListItem
+              key={lead.id}
+              leaditem={lead}
+              handleDelete={handleDelete}
+            />
+          ))
         )}
       </div>
     </div>

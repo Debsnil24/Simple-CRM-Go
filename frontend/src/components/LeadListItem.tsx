@@ -11,10 +11,11 @@ interface LeadItem {
 }
 
 interface LeadListItemProps {
-  leaditem: LeadItem;
+    leaditem: LeadItem;
+    handleDelete: (id: string) => void;
 }
 
-const LeadListItem: React.FC<LeadListItemProps> = ({ leaditem }) => {
+const LeadListItem: React.FC<LeadListItemProps> = ({ leaditem, handleDelete }) => {
   return (
     <Box className="lead-list-container">
       <div className="lead-item">
@@ -40,7 +41,7 @@ const LeadListItem: React.FC<LeadListItemProps> = ({ leaditem }) => {
           <IconButton color="info">
             <Edit />
           </IconButton>
-          <IconButton color="error">
+          <IconButton color="error" onClick={() => handleDelete(leaditem.id)}>
             <Delete />
           </IconButton>
         </div>
