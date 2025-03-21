@@ -4,7 +4,7 @@ import "../styles/leadlist.css";
 import ModalDialog from "./ModalDialog";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createLead, deleteLead, getAll } from "../routes";
+import { createLead, deleteLead, getAll, modifyLead } from "../routes";
 import LeadListItem from "./LeadListItem";
 
 interface Lead {
@@ -55,6 +55,31 @@ const LeadList = () => {
       alert("Failed to Create Lead");
     },
   });
+    
+  const modifyMutation = useMutation({
+    mutationFn: async (updatedLead: {
+      id: string;
+      name: string;
+      company: string;
+      number: string;
+      email: string;
+    }) => {
+      await modifyLead(
+        updatedLead.id, 
+        updatedLead.name, 
+        updatedLead.company, 
+        updatedLead.number, 
+        updatedLead.email
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] }); // Refresh data after modification
+    },
+    onError: (error) => {
+      console.log("Failed to modify lead", error);
+      alert("Failed to Modify Lead");
+    },
+  });
 
   useEffect(() => {
     if (Array.isArray(data)) {
@@ -75,6 +100,16 @@ const LeadList = () => {
 
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id);
+  };
+    
+  const handleModifyLead = (updatedLead: {
+    id: string;
+    name: string;
+    company: string;
+    number: string;
+    email: string;
+  }) => {
+    modifyMutation.mutate(updatedLead);
   };
 
   const handleCreateLead = (newLead: {
@@ -117,7 +152,8 @@ const LeadList = () => {
             <LeadListItem
               key={lead.id}
               leaditem={lead}
-              handleDelete={handleDelete}
+                  handleDelete={handleDelete}
+                  handleModify={handleModifyLead}
             />
           ))
         )}

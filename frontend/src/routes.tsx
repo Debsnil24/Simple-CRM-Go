@@ -54,3 +54,25 @@ export const createLead = async (
     throw error;
   }
 };
+
+export const modifyLead = async (ID: string, name: string, company: string, number: string, email: string) => {
+    try {
+        const response = await axios.put("/api/crm/modify",
+            {
+                name: name,
+                company: company,
+                number: number,
+                email: email
+            },
+            {
+                params: {
+                id: ID
+            }}
+
+        )
+        return response.data
+    } catch (error) {
+        console.error("Unable to modify lead", error)
+        throw error
+    }
+}

@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/material.css";
 import {
   Dialog,
   DialogTitle,
@@ -10,7 +12,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "../styles/ModalDialog.css";
-interface MediaDialogProps {
+interface ModalDialogProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (lead: {
@@ -19,12 +21,14 @@ interface MediaDialogProps {
     number: string;
     email: string;
   }) => void;
+  initialData?: { name: string; company: string; number: string; email: string; }
 }
 
-const MediaDialog: React.FC<MediaDialogProps> = ({
+const ModalDialog: React.FC<ModalDialogProps> = ({
   open,
   onClose,
   onSubmit,
+  initialData,
 }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -32,6 +36,14 @@ const MediaDialog: React.FC<MediaDialogProps> = ({
     number: "",
     email: "",
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    } else {
+      setFormData({ name: "", company: "", number: "", email: "" });
+    }
+  }, [initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,7 +66,7 @@ const MediaDialog: React.FC<MediaDialogProps> = ({
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>
-        Create New Lead
+        {initialData ? "Modify Lead" : "Create New Lead"}
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -76,6 +88,7 @@ const MediaDialog: React.FC<MediaDialogProps> = ({
           onChange={handleChange}
           fullWidth
           margin="normal"
+          autoCapitalize="on"
         />
         <TextField
           label="Company"
@@ -85,13 +98,12 @@ const MediaDialog: React.FC<MediaDialogProps> = ({
           fullWidth
           margin="normal"
         />
-        <TextField
-          label="Number"
-          name="number"
+        <PhoneInput
+          country={"in"}
           value={formData.number}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
+          onChange={(value) => setFormData({ ...formData, number: value })}
+          inputStyle={{ width: "100%", backgroundColor:"transparent", border: "1px solid rgba(0, 0, 0, 0.23)", color: "rgba(0, 0, 0, 0.87)",}}
+          specialLabel=""
         />
         <TextField
           label="Email"
@@ -104,11 +116,11 @@ const MediaDialog: React.FC<MediaDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit
+          {initialData ? "Update Lead":"Create Lead"}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default MediaDialog;
+export default ModalDialog;
